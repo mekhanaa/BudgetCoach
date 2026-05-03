@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="auth-page">
+
+<div class="auth-box">
+    <h1>Create Account</h1>
+
+    <form method="post">
+        <input type="text" name="username" placeholder="Username" required><br><br>
+
+        <input type="password" name="password" placeholder="Password" required><br><br>
+
+        <select name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="Girl">Girl</option>
+            <option value="Boy">Boy</option>
+        </select><br><br>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p>Already have account?
+        <a href="/">Login</a>
+    </p>
+</div>
+
+</body>
+</html>

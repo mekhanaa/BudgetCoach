@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Expense</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<!-- Top Header -->
+<div class="top-header">
+    <h1 class="logo">BudgetCoach</h1>
+</div>
+<a href="/dashboard" class="back-btn">Back</a>
+<!-- Page Content -->
+<div class="dashboard-container">
+
+    <h2>Add Expense</h2>
+
+    <form method="post" class="expense-form">
+        <input type="number" name="amount" placeholder="Amount ₹" required>
+
+        <select name="category" required>
+            <option value="">Select Category</option>
+            <option>Food</option>
+            <option>Travel</option>
+            <option>Shopping</option>
+            <option>Bills</option>
+            <option>Entertainment</option>
+            <option>Other</option>
+        </select>
+
+        <input type="date" name="date" required>
+
+        <input type="text" name="note" placeholder="Note (optional)">
+
+        <button type="submit">Save Expense</button>
+    </form>
+
+</div>
+
+</body>
+</html>

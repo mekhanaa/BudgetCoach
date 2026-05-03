@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Expense</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="top-header">
+    <h1 class="logo">BudgetCoach</h1>
+</div>
+
+<a href="/view-expenses" class="back-btn">Back</a>
+
+<div class="dashboard-container">
+    <div class="card">
+        <h2>Edit Expense</h2>
+
+        <form method="post">
+            <input type="number" name="amount" value="{{ expense[1] }}" required><br><br>
+            <input type="text" name="category" value="{{ expense[2] }}" required><br><br>
+            <input type="text" name="note" value="{{ expense[3] }}" required><br><br>
+            <input type="date" name="date" value="{{ expense[4] }}" required><br><br>
+
+            <button type="submit">Update Expense</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

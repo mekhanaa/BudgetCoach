@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Expenses</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="top-header">
+    <h1 class="logo">BudgetCoach</h1>
+</div>
+
+<a href="/dashboard" class="back-btn">Back</a>
+
+<div class="dashboard-container">
+
+    {% if warning %}
+    <div class="warning">{{ warning }}</div>
+{% endif %}
+
+<div class="cards">
+
+    <div class="card-box">
+        <h3>Total Expense</h3>
+        <p>₹{{ total }}</p>
+        <p>Today: ₹{{ daily_total }}</p>
+        <p>Week: ₹{{ weekly_total }}</p>
+        <p>Month: ₹{{ monthly_total }}</p>
+    </div>
+
+    <div class="card-box">
+        <h3>Set Monthly Budget</h3>
+        <form method="post">
+            <input type="number" name="limit" placeholder="Budget" required><br><br>
+            <button type="submit">Save</button>
+        </form>
+        <p>₹{{ monthly_limit }}</p>
+    </div>
+
+    <div class="card-box">
+        <h3>Savings Prediction</h3>
+        <p>Month End Expense:</p>
+        <p>₹{{ predicted_month_end }}</p>
+        <p>Possible Saving:</p>
+        <p>₹{{ possible_saving }}</p>
+    </div>
+
+    <div class="card-box">
+        <p>{{ suggestion }}</p>
+    </div>
+
+</div>
+
+    <h2>Expense History</h2>
+
+    <table>
+        <tr>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Note</th>
+            <th>Date</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+
+        {% for exp in expenses %}
+        <tr>
+            <td>₹{{ exp[1] }}</td>
+            <td>{{ exp[2] }}</td>
+            <td>{{ exp[3] }}</td>
+            <td>{{ exp[4] }}</td>
+            <td><a href="/edit-expense/{{ exp[0] }}"><button>Edit</button></a></td>
+            <td><a href="/delete-expense/{{ exp[0] }}"><button>Delete</button></a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>

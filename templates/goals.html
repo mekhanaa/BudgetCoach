@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Budget & Goals</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="top-header">
+    <h1 class="logo">BudgetCoach</h1>
+</div>
+<a href="/dashboard" class="back-btn">Back</a>
+<div class="card">
+
+    <div class="target">
+        🎯 Daily Target: ₹ {{ daily_target }}
+    </div>
+
+    <div>
+        💸 Today Spent: ₹ {{ today_spent }}
+    </div>
+
+    {% if achieved %}
+        <div class="status success">✅ Target Achieved</div>
+    {% else %}
+        <div class="status fail">❌ Target Failed</div>
+    {% endif %}
+
+    <div class="streak">
+        🔥 {{ streak }}
+        <div class="label">Current Streak</div>
+    </div>
+
+</div>
+
+</body>
+</html>

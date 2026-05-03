@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personalization</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="top-header">
+    <h1 class="logo">BudgetCoach</h1>
+</div>
+
+<a href="/dashboard" class="back-btn">Back</a>
+
+<div class="dashboard-container">
+
+    <div class="card">
+        <h3>Available Points: {{ points }}</h3>
+
+        {% if message %}
+            <p class="success">{{ message }}</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h3>Your Current Avatar</h3>
+
+        {% if gender == "Girl" %}
+            {% if current_skin == "basic" %}
+                <img src="/static/images/girl.png" width="200">
+            {% elif current_skin == "formal" %}
+                <img src="/static/images/casual.png" width="200">
+            {% elif current_skin == "churidar" %}
+                <img src="/static/images/churidhar.png" width="200">
+            {% elif current_skin == "saree" %}
+                <img src="/static/images/saree.png" width="200">
+            {% elif current_skin == "party" %}
+                <img src="/static/images/party.png" width="200">
+            {% endif %}
+        {% else %}
+            {% if current_skin == "basic" %}
+                <img src="/static/images/boy.png" width="200">
+            {% elif current_skin == "casual" %}
+                <img src="/static/images/ca.png" width="200">
+            {% elif current_skin == "mundu" %}
+                <img src="/static/images/mundu.png" width="200">
+            {% elif current_skin == "baggy" %}
+                <img src="/static/images/tshirt.png" width="200">
+            {% elif current_skin == "rich" %}
+                <img src="/static/images/rich.png" width="200">
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <h3>Unlock New Looks</h3>
+
+    <div class="cards">
+
+        {% for skin, cost in skins.items() %}
+        <div class="card-box" style="width:220px;">
+
+            {% if gender == "Girl" %}
+                {% if skin == "formal" %}
+                    <img src="/static/images/casual.png" width="120"><br>
+                    
+                {% elif skin == "churidar" %}
+                    <img src="/static/images/churidhar.png" width="120"><br>
+                    
+                {% elif skin == "saree" %}
+                    <img src="/static/images/saree.png" width="120"><br>
+                    
+                {% elif skin == "party" %}
+                    <img src="/static/images/party.png" width="120"><br>
+                    
+                {% endif %}
+            {% else %}
+                {% if skin == "casual" %}
+                    <img src="/static/images/ca.png" width="120"><br>
+                
+                {% elif skin == "mundu" %}
+                    <img src="/static/images/mundu.png" width="120"><br>
+                    
+                {% elif skin == "baggy" %}
+                    <img src="/static/images/tshirt.png" width="120"><br>
+                    
+                {% elif skin == "rich" %}
+                    <img src="/static/images/rich.png" width="120"><br>
+                    
+                {% endif %}
+            {% endif %}
+
+            <p>Cost: {{ cost }} Point(s)</p>
+
+            {% if skin in owned %}
+                <form method="post">
+                    <input type="hidden" name="skin" value="{{ skin }}">
+                    <button type="submit" name="wear">Wear This</button>
+                </form>
+            {% else %}
+                <form method="post">
+                    <input type="hidden" name="skin" value="{{ skin }}">
+                    <button type="submit" name="buy">Buy Now</button>
+                </form>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
