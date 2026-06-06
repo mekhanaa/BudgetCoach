@@ -1,36 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Budget & Goals</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals & Streak</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+
 <div class="top-header">
-    <h1 class="logo">BudgetCoach</h1>
+    <div class="logo">Budget<span>Coach</span></div>
 </div>
+
 <a href="/dashboard" class="back-btn">Back</a>
-<div class="card">
 
-    <div class="target">
-        🎯 Daily Target: ₹ {{ daily_target }}
+<div class="page-wrap">
+    <div class="page-title">Goals & <span>Streak</span></div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px;">
+
+        <!-- Streak Card -->
+        <div class="card fade-up" style="text-align:center; padding:36px;">
+            <div class="streak-display">{{ streak }}</div>
+            <div class="streak-label">Day Streak 🔥</div>
+
+            <div style="margin-top:24px; padding:16px; background:var(--subtle); border-radius:var(--radius-sm);">
+                {% if achieved %}
+                <div style="color:var(--accent3); font-weight:600; font-size:15px;">✅ Today's target achieved!</div>
+                {% else %}
+                <div style="color:var(--danger); font-weight:600; font-size:15px;">❌ Target not met today</div>
+                {% endif %}
+                <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+                    Spent ₹{{ "%.0f"|format(today_spent) }} / Daily Target ₹{{ daily_target }}
+                </div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <span class="points-pill">⭐ {{ points }} points earned</span>
+                <div style="font-size:12px; color:var(--muted); margin-top:8px;">+1 point every 10-day streak</div>
+            </div>
+        </div>
+
+        <!-- Daily Target Info -->
+        <div class="card fade-up fade-up-1">
+            <div class="section-title">Daily Target</div>
+            <div style="font-family:'Syne',sans-serif; font-size:48px; font-weight:800; color:var(--accent); margin:12px 0;">
+                ₹500
+            </div>
+            <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">
+                Keep your daily spending under ₹500 to maintain your streak. Every 10 consecutive days earns you <strong style="color:var(--warn);">1 point</strong> to spend in the avatar shop.
+            </p>
+
+            <div style="padding:14px; background:var(--subtle); border-radius:var(--radius-sm);">
+                <div style="font-size:12px; color:var(--muted);">TODAY'S PROGRESS</div>
+                {% set pct = [(today_spent / daily_target * 100)|round(1), 100]|min %}
+                <div class="progress-wrap" style="margin-top:8px;">
+                    <div class="progress-bar {% if pct >= 100 %}over{% endif %}" style="width:{{ pct }}%;"></div>
+                </div>
+                <div style="font-size:12px; color:var(--muted); margin-top:6px;">{{ pct }}% of daily target used</div>
+            </div>
+        </div>
+
     </div>
 
-    <div>
-        💸 Today Spent: ₹ {{ today_spent }}
+    <!-- Week History -->
+    <div class="card fade-up fade-up-2">
+        <div class="section-title">Last 7 Days</div>
+        <div class="week-dots">
+            {% for day in week_history %}
+            <div class="week-dot">
+                {% if day.spent > 0 %}
+                    {% if day.ok %}
+                    <div class="dot ok">✅</div>
+                    {% else %}
+                    <div class="dot fail">❌</div>
+                    {% endif %}
+                {% else %}
+                <div class="dot empty">—</div>
+                {% endif %}
+                <div class="dot-day">{{ day.day }}</div>
+                <div style="font-size:10px; color:var(--muted);">
+                    {% if day.spent > 0 %}₹{{ "%.0f"|format(day.spent) }}{% else %}—{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
-    {% if achieved %}
-        <div class="status success">✅ Target Achieved</div>
-    {% else %}
-        <div class="status fail">❌ Target Failed</div>
-    {% endif %}
-
-    <div class="streak">
-        🔥 {{ streak }}
-        <div class="label">Current Streak</div>
+    <!-- How it works -->
+    <div class="card fade-up fade-up-3" style="margin-top:18px;">
+        <div class="section-title">How It Works</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:16px; margin-top:8px;">
+            <div style="padding:14px; background:var(--subtle); border-radius:var(--radius-sm);">
+                <div style="font-size:24px; margin-bottom:6px;"></div>
+                <div style="font-size:14px; font-weight:500;">Stay under ₹500/day</div>
+                <div style="font-size:13px; color:var(--muted);">Keeps your streak alive</div>
+            </div>
+            <div style="padding:14px; background:var(--subtle); border-radius:var(--radius-sm);">
+                <div style="font-size:24px; margin-bottom:6px;"></div>
+                <div style="font-size:14px; font-weight:500;">Every 10-day streak</div>
+                <div style="font-size:13px; color:var(--muted);">Earn +1 point automatically</div>
+            </div>
+            <div style="padding:14px; background:var(--subtle); border-radius:var(--radius-sm);">
+                <div style="font-size:24px; margin-bottom:6px;"></div>
+                <div style="font-size:14px; font-weight:500;">Spend points</div>
+                <div style="font-size:13px; color:var(--muted);">Unlock avatar skins in the shop</div>
+            </div>
+        </div>
     </div>
 
 </div>
-
 </body>
 </html>

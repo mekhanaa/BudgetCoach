@@ -1,81 +1,230 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Expenses</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
 <div class="top-header">
-    <h1 class="logo">BudgetCoach</h1>
+    <div class="logo">Budget<span>Coach</span></div>
 </div>
 
 <a href="/dashboard" class="back-btn">Back</a>
 
-<div class="dashboard-container">
+<div class="page-wrap">
+    <div class="page-title">Expense <span>Overview</span></div>
 
     {% if warning %}
-    <div class="warning">{{ warning }}</div>
+    <div class="warning-banner fade-up">{{ warning }}</div>
+    {% endif %}
+
+    <!-- Stat Cards Row -->
+    <div class="cards-grid fade-up" style="grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); margin-bottom:28px;">
+        <div class="stat-card">
+            <div class="stat-label">Today</div>
+            <div class="stat-value" style="font-size:22px;">₹{{ "%.2f"|format(daily_total) }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">This Week</div>
+            <div class="stat-value" style="font-size:22px;">₹{{ "%.2f"|format(weekly_total) }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">This Month</div>
+            <div class="stat-value" style="font-size:22px;">₹{{ "%.2f"|format(monthly_total) }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">All Time</div>
+            <div class="stat-value" style="font-size:22px;">₹{{ "%.2f"|format(total) }}</div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    {% if chart_labels %}
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:28px;" class="fade-up fade-up-1">
+
+        <div class="card">
+            <div class="section-title">Monthly by Category</div>
+            <div class="chart-wrap" style="height:200px;">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Last 7 Days Spending</div>
+            <div class="chart-wrap" style="height:200px;">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+
+    <!-- Budget & Prediction -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:28px;" class="fade-up fade-up-2">
+
+        <div class="card">
+            <div class="section-title">Set Monthly Budget</div>
+            <form method="post" style="display:flex; gap:10px; align-items:flex-end;">
+                <div class="form-group" style="flex:1; margin:0;">
+                    <label>Budget Limit (₹)</label>
+                    <input type="number" name="limit" placeholder="e.g. 10000" min="1" required>
+                </div>
+                <button type="submit" style="white-space:nowrap; padding:11px 18px;">Set</button>
+            </form>
+            {% if monthly_limit %}
+            <div style="margin-top:16px;">
+                <div class="flex justify-between" style="font-size:13px; color:var(--muted); margin-bottom:6px;">
+                    <span>₹{{ "%.0f"|format(monthly_total) }} spent</span>
+                    <span>₹{{ "%.0f"|format(monthly_limit) }} limit</span>
+                </div>
+                {% set pct = [(monthly_total / monthly_limit * 100)|round(1), 100]|min %}
+                <div class="progress-wrap">
+                    <div class="progress-bar {% if pct >= 90 %}over{% endif %}" style="width:{{ pct }}%;"></div>
+                </div>
+                <div style="font-size:12px; color:var(--muted); margin-top:6px;">{{ pct }}% of budget used</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="section-title">Savings Prediction</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;">
+                <div>
+                    <div style="font-size:12px; color:var(--muted); margin-bottom:4px;">Projected month-end</div>
+                    <div style="font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:var(--warn);">
+                        ₹{{ "%.0f"|format(predicted_month_end) }}
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:12px; color:var(--muted); margin-bottom:4px;">Possible savings</div>
+                    <div style="font-family:'Syne',sans-serif; font-size:20px; font-weight:700;
+                        color:{% if possible_saving >= 0 %}var(--accent3){% else %}var(--danger){% endif %};">
+                        ₹{{ "%.0f"|format(possible_saving) }}
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info" style="margin-top:16px; font-size:13px;">
+                💡 {{ suggestion }}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Expense Table -->
+    <div class="section-title fade-up fade-up-3">Transaction History</div>
+    {% if expenses %}
+    <div class="table-wrap fade-up fade-up-4">
+        <table>
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Note</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for exp in expenses %}
+            <tr>
+                <td><strong>₹{{ "%.2f"|format(exp['amount']) }}</strong></td>
+                <td><span class="category-badge">{{ exp['category'] }}</span></td>
+                <td style="color:var(--muted);">{{ exp['note'] }}</td>
+                <td style="color:var(--muted); font-size:13px;">{{ exp['date'] }}</td>
+                <td>
+                    <div style="display:flex; gap:8px;">
+                        <a href="/edit-expense/{{ exp['id'] }}" class="btn btn-secondary btn-sm">Edit</a>
+                        <a href="/delete-expense/{{ exp['id'] }}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Delete this expense?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card fade-up" style="text-align:center; padding:48px; color:var(--muted);">
+        <div style="font-size:40px; margin-bottom:12px;">📭</div>
+        <p>No expenses yet. <a href="/add-expense">Add your first one</a></p>
+    </div>
+    {% endif %}
+
+</div>
+{% if chart_labels %}
+<script>
+const chartDefaults = {
+    font: { family: "'DM Sans', sans-serif" },
+    color: '#64748b'
+};
+Chart.defaults.font.family = chartDefaults.font.family;
+Chart.defaults.color = chartDefaults.color;
+
+// Pie chart
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ chart_labels | tojson }},
+        datasets: [{
+            data: {{ chart_values | tojson }},
+            backgroundColor: [
+                'rgba(56,189,248,0.8)',
+                'rgba(129,140,248,0.8)',
+                'rgba(52,211,153,0.8)',
+                'rgba(251,191,36,0.8)',
+                'rgba(248,113,113,0.8)',
+                'rgba(167,139,250,0.8)',
+                'rgba(94,234,212,0.8)',
+                'rgba(253,186,116,0.8)',
+            ],
+            borderColor: '#111827',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } }
+        },
+        cutout: '60%'
+    }
+});
+
+// Line chart
+const lineCtx = document.getElementById('lineChart').getContext('2d');
+new Chart(lineCtx, {
+    type: 'line',
+    data: {
+        labels: {{ daily_dates | tojson }},
+        datasets: [{
+            label: 'Spending (₹)',
+            data: {{ daily_amounts | tojson }},
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56,189,248,0.08)',
+            borderWidth: 2,
+            pointBackgroundColor: '#38bdf8',
+            pointRadius: 4,
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { grid: { color: 'rgba(30,45,69,0.6)' }, ticks: { font: { size: 11 } } },
+            y: { grid: { color: 'rgba(30,45,69,0.6)' }, ticks: { font: { size: 11 } } }
+        }
+    }
+});
+</script>
 {% endif %}
-
-<div class="cards">
-
-    <div class="card-box">
-        <h3>Total Expense</h3>
-        <p>₹{{ total }}</p>
-        <p>Today: ₹{{ daily_total }}</p>
-        <p>Week: ₹{{ weekly_total }}</p>
-        <p>Month: ₹{{ monthly_total }}</p>
-    </div>
-
-    <div class="card-box">
-        <h3>Set Monthly Budget</h3>
-        <form method="post">
-            <input type="number" name="limit" placeholder="Budget" required><br><br>
-            <button type="submit">Save</button>
-        </form>
-        <p>₹{{ monthly_limit }}</p>
-    </div>
-
-    <div class="card-box">
-        <h3>Savings Prediction</h3>
-        <p>Month End Expense:</p>
-        <p>₹{{ predicted_month_end }}</p>
-        <p>Possible Saving:</p>
-        <p>₹{{ possible_saving }}</p>
-    </div>
-
-    <div class="card-box">
-        <p>{{ suggestion }}</p>
-    </div>
-
-</div>
-
-    <h2>Expense History</h2>
-
-    <table>
-        <tr>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Note</th>
-            <th>Date</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
-
-        {% for exp in expenses %}
-        <tr>
-            <td>₹{{ exp[1] }}</td>
-            <td>{{ exp[2] }}</td>
-            <td>{{ exp[3] }}</td>
-            <td>{{ exp[4] }}</td>
-            <td><a href="/edit-expense/{{ exp[0] }}"><button>Edit</button></a></td>
-            <td><a href="/delete-expense/{{ exp[0] }}"><button>Delete</button></a></td>
-        </tr>
-        {% endfor %}
-    </table>
-
-</div>
-
 </body>
 </html>

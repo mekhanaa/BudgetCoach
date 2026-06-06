@@ -1,55 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
 <div class="top-header">
-    <h1 class="logo">BudgetCoach</h1>
+    <div class="logo">Budget<span>Coach</span></div>
 </div>
 
 <a href="/dashboard" class="back-btn">Back</a>
 
-<div class="dashboard-container">
-
-    <h2>Account Settings</h2>
-    <p style="font-size:18px; margin-bottom:25px;">
-        Current Username: <span style="color:#38bdf8;">{{ username }}</span>
-    </p>
+<div class="page-wrap">
+    <div class="page-title">Account <span>Settings</span></div>
 
     {% if message %}
-        <p class="success">{{ message }}</p>
+    <div class="alert alert-{{ msg_type }} fade-up">
+        {% if msg_type == 'success' %}✅{% else %}⚠️{% endif %} {{ message }}
+    </div>
     {% endif %}
 
-    <div class="cards">
+    <div style="margin-bottom:12px; color:var(--muted); font-size:14px;">
+        Logged in as <span style="color:var(--accent); font-weight:600;">{{ username }}</span>
+    </div>
 
-        <div class="card-box">
-            <h3>Change Username</h3>
+    <div class="cards-grid fade-up" style="grid-template-columns:1fr 1fr; margin-bottom:24px;">
+
+        <!-- Change Username -->
+        <div class="card">
+            <div class="section-title">Change Username</div>
             <form method="post">
-                <input type="text" name="new_username" placeholder="New Username"><br><br>
-                <button type="submit">Update</button>
+                <div class="form-group">
+                    <label>New Username</label>
+                    <input type="text" name="new_username" placeholder="Enter new username" minlength="3">
+                </div>
+                <button type="submit" style="width:100%;">Update Username</button>
             </form>
         </div>
 
-        <div class="card-box">
-            <h3>Change Password</h3>
+        <!-- Change Password -->
+        <div class="card">
+            <div class="section-title">Change Password</div>
             <form method="post">
-                <input type="password" name="new_password" placeholder="New Password"><br><br>
-                <button type="submit">Update</button>
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" name="current_password" placeholder="Your current password" required>
+                </div>
+                <div class="form-group">
+                    <label>New Password <span style="color:var(--muted);font-size:12px;">(min. 6 chars)</span></label>
+                    <input type="password" name="new_password" placeholder="New password" minlength="6" required>
+                </div>
+                <button type="submit" style="width:100%;">Update Password</button>
             </form>
-        </div>
-
-        <div class="card-box">
-            <h3>Logout Account</h3>
-            <br>
-            <a href="/logout"><button>Logout</button></a>
         </div>
 
     </div>
 
-</div>
+    <!-- Logout -->
+    <div class="card fade-up fade-up-1" style="max-width:320px;">
+        <div class="section-title">Logout</div>
+        <p style="color:var(--muted); font-size:14px; margin-bottom:16px;">
+            You'll be signed out of your account.
+        </p>
+        <a href="/logout">
+            <button style="background:rgba(248,113,113,0.12); color:var(--danger); border:1px solid rgba(248,113,113,0.2); width:100%;">
+                Logout
+            </button>
+        </a>
+    </div>
 
+</div>
 </body>
 </html>

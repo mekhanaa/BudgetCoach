@@ -1,45 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
 <div class="top-header">
-    <h1 class="logo">BudgetCoach</h1>
+    <div class="logo">Budget<span>Coach</span></div>
+    <div class="header-nav">
+        {% if goals %}
+        <span class="points-pill">⭐ {{ goals['points'] }} pts</span>
+        {% endif %}
+        <a href="/logout" class="btn btn-secondary btn-sm">Logout</a>
+    </div>
 </div>
 
-<div class="dashboard-container">
+<div class="page-wrap">
 
-    <div class="cards">
+    <div class="welcome-section fade-up">
+        <h2>Hello, <span>{{ user['username'] }}</span></h2>
+        <p>Here's your financial snapshot for today.</p>
+    </div>
 
-        <a href="/add-expense" class="card-box">
+    <!-- Quick Stats -->
+    <div class="cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); margin-bottom: 32px;">
+        <div class="stat-card fade-up fade-up-1">
+            <div class="stat-label">Today's Spending</div>
+            <div class="stat-value">₹{{ "%.0f"|format(today_total) }}</div>
+            <div class="stat-sub">Logged today</div>
+        </div>
+
+        <div class="stat-card fade-up fade-up-2">
+            <div class="stat-label">Monthly Total</div>
+            <div class="stat-value">₹{{ "%.0f"|format(month_total) }}</div>
+            <div class="stat-sub">This month so far</div>
+        </div>
+
+        <div class="stat-card fade-up fade-up-3">
+            <div class="stat-label">Monthly Budget</div>
+            <div class="stat-value">
+                {% if monthly_limit %}₹{{ "%.0f"|format(monthly_limit) }}{% else %}<span style="font-size:18px;color:var(--muted);">Not set</span>{% endif %}
+            </div>
+            {% if monthly_limit %}
+            <div class="progress-wrap" style="margin-top:12px;">
+                <div class="progress-bar {% if budget_pct >= 90 %}over{% endif %}" style="width:{{ budget_pct }}%;"></div>
+            </div>
+            <div class="stat-sub" style="margin-top:6px;">{{ budget_pct }}% used</div>
+            {% endif %}
+        </div>
+
+        <div class="stat-card fade-up fade-up-4">
+            <div class="stat-label">Current Streak</div>
+            <div class="stat-value" style="color:var(--warn);">
+                {% if goals %}🔥 {{ goals['streak'] }}{% else %}0{% endif %}
+            </div>
+            <div class="stat-sub">Consecutive days on target</div>
+        </div>
+    </div>
+
+    <!-- Navigation Cards -->
+    <div class="section-title fade-up">Quick Access</div>
+    <div class="cards-grid fade-up fade-up-1">
+
+        <a href="/add-expense" class="nav-card">
             <h3>Add Expense</h3>
             <p>Record your daily spending</p>
         </a>
 
-        <a href="/view-expenses" class="card-box">
+        <a href="/view-expenses" class="nav-card">
             <h3>View Expenses</h3>
-            <p>See all your spending details</p>
+            <p>Charts, history & budget analysis</p>
         </a>
 
-        <a href="/goals" class="card-box">
-            <h3>Budget & Goals</h3>
-            <p>Track your daily streak</p>
+        <a href="/goals" class="nav-card">
+            <h3>Goals & Streak</h3>
+            <p>Track your daily targets</p>
         </a>
-        <a href="/personalization" class="card-box">
-    <h3>Personalization</h3>
-    <p>Unlock avatar items using points</p>
-</a>
-<a href="/settings" class="card-box">
-    <h3>Settings</h3>
-    <p>Manage your account</p>
-</a>
+
+        <a href="/personalization" class="nav-card">
+            <h3>Personalization</h3>
+            <p>Unlock avatar skins with points</p>
+        </a>
+
+        <a href="/settings" class="nav-card">
+            <h3>Settings</h3>
+            <p>Manage your account</p>
+        </a>
 
     </div>
 
 </div>
-
 </body>
 </html>

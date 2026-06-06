@@ -1,31 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Expense</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
 <div class="top-header">
-    <h1 class="logo">BudgetCoach</h1>
+    <div class="logo">Budget<span>Coach</span></div>
 </div>
 
-<a href="/view-expenses" class="back-btn">Back</a>
+<a href="/view-expenses" class="back-btn">← Back</a>
 
-<div class="dashboard-container">
-    <div class="card">
-        <h2>Edit Expense</h2>
+<div class="page-wrap">
+    <div class="page-title">Edit <span>Expense</span></div>
+
+    <div class="card fade-up" style="max-width:520px;">
+
+        {% if error %}
+        <div class="alert alert-error">⚠️ {{ error }}</div>
+        {% endif %}
 
         <form method="post">
-            <input type="number" name="amount" value="{{ expense[1] }}" required><br><br>
-            <input type="text" name="category" value="{{ expense[2] }}" required><br><br>
-            <input type="text" name="note" value="{{ expense[3] }}" required><br><br>
-            <input type="date" name="date" value="{{ expense[4] }}" required><br><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" name="amount" value="{{ expense['amount'] }}" step="0.01" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" name="date" value="{{ expense['date'] }}" required>
+                </div>
+            </div>
 
-            <button type="submit">Update Expense</button>
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category" required>
+                    {% for cat in ['Food','Travel','Shopping','Bills','Entertainment','Healthcare','Education','Other'] %}
+                    <option {% if expense['category'] == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Note</label>
+                <input type="text" name="note" value="{{ expense['note'] }}">
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:8px;">
+                <button type="submit" style="flex:1; padding:13px;">Update Expense</button>
+                <a href="/view-expenses" class="btn btn-secondary" style="flex:1; padding:13px; text-align:center;">Cancel</a>
+            </div>
         </form>
     </div>
 </div>
-
 </body>
 </html>
