@@ -15,7 +15,6 @@
 <a href="/dashboard" class="back-btn">Back</a>
 
 <div class="page-wrap">
-    <div class="page-title">Avatar <span>Shop</span></div>
 
     {% if message %}
     <div class="alert alert-{{ msg_type if msg_type else 'info' }} fade-up">
@@ -30,26 +29,25 @@
         <div class="card" style="padding:24px; text-align:center; min-width:180px;">
             <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px;">Your Avatar</div>
 
-            {% if gender == "Girl" %}
+            {% if gender == "Female" %}
                 {% if current_skin == "basic" %}<img src="/static/images/girl.png" width="140">
                 {% elif current_skin == "formal" %}<img src="/static/images/casual.png" width="140">
                 {% elif current_skin == "churidar" %}<img src="/static/images/churidhar.png" width="140">
-                {% elif current_skin == "saree" %}<img src="/static/images/saree.png" width="140">
-                {% elif current_skin == "party" %}<img src="/static/images/party.png" width="140">
+                {% elif current_skin == "traditional" %}<img src="/static/images/saree.png" width="140">
+                {% elif current_skin == "party wear" %}<img src="/static/images/party.png" width="140">
                 {% endif %}
             {% else %}
                 {% if current_skin == "basic" %}<img src="/static/images/boy.png" width="140">
-                {% elif current_skin == "casual" %}<img src="/static/images/ca.png" width="140">
-                {% elif current_skin == "mundu" %}<img src="/static/images/mundu.png" width="140">
-                {% elif current_skin == "baggy" %}<img src="/static/images/tshirt.png" width="140">
-                {% elif current_skin == "rich" %}<img src="/static/images/rich.png" width="140">
+                {% elif current_skin == "casuals" %}<img src="/static/images/ca.png" width="140">
+                {% elif current_skin == "traditional" %}<img src="/static/images/mundu.png" width="140">
+                {% elif current_skin == "chill" %}<img src="/static/images/tshirt.png" width="140">
+                {% elif current_skin == "suit" %}<img src="/static/images/rich.png" width="140">
                 {% endif %}
             {% endif %}
 
             <div style="margin-top:12px; font-family:'Syne',sans-serif; font-weight:600; text-transform:capitalize;">
                 {{ current_skin }}
             </div>
-            <div style="font-size:12px; color:var(--muted);">Currently wearing</div>
         </div>
 
         <!-- Points info -->
@@ -59,7 +57,7 @@
 
             <div style="font-size:14px; color:var(--text); line-height:1.8;">
                 Stay under your daily spending target<br>
-                Maintain a 5-day streak → +1 point<br>
+                Maintain a 10-day streak → +1 point<br>
                 Spend points below to unlock new looks
             </div>
         </div>
@@ -73,17 +71,17 @@
         {% for skin, cost in skins.items() %}
         <div class="skin-card {% if skin in owned %}owned{% endif %} {% if skin == current_skin %}active{% endif %}">
 
-            {% if gender == "Girl" %}
+            {% if gender == "Female" %}
                 {% if skin == "formal" %}<img src="/static/images/casual.png">
                 {% elif skin == "churidar" %}<img src="/static/images/churidhar.png">
-                {% elif skin == "saree" %}<img src="/static/images/saree.png">
-                {% elif skin == "party" %}<img src="/static/images/party.png">
+                {% elif skin == "traditional" %}<img src="/static/images/saree.png">
+                {% elif skin == "party wear" %}<img src="/static/images/party.png">
                 {% endif %}
             {% else %}
-                {% if skin == "casual" %}<img src="/static/images/ca.png">
-                {% elif skin == "mundu" %}<img src="/static/images/mundu.png">
-                {% elif skin == "baggy" %}<img src="/static/images/tshirt.png">
-                {% elif skin == "rich" %}<img src="/static/images/rich.png">
+                {% if skin == "casuals" %}<img src="/static/images/ca.png">
+                {% elif skin == "traditional" %}<img src="/static/images/mundu.png">
+                {% elif skin == "chill" %}<img src="/static/images/tshirt.png">
+                {% elif skin == "suit" %}<img src="/static/images/rich.png">
                 {% endif %}
             {% endif %}
 

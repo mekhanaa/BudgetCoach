@@ -506,10 +506,10 @@ def personalization():
     cursor.execute("SELECT skin_name FROM owned_skins WHERE user_id=?", (user_id,))
     owned = [x["skin_name"] for x in cursor.fetchall()]
 
-    if gender == "Girl":
-        skins = {"formal": 1, "churidar": 2, "saree": 3, "party": 4}
+    if gender == "Female":
+        skins = {"formal": 1, "churidar": 2, "traditional": 3, "party wear": 4}
     else:
-        skins = {"casual": 1, "mundu": 2, "baggy": 3, "rich": 4}
+        skins = {"casuals": 1, "traditional": 2, "chill": 3, "suit": 4}
 
     message = ""
     msg_type = ""
@@ -528,7 +528,7 @@ def personalization():
                 cursor.execute("INSERT INTO owned_skins(user_id, skin_name) VALUES (?, ?)", (user_id, selected_skin))
                 db.commit()
                 owned.append(selected_skin)
-                message = f"'{selected_skin.title()}' skin unlocked! 🎉"
+                message = f"'{selected_skin.title()}' skin unlocked!"
                 msg_type = "success"
             else:
                 message = f"Not enough points. Need {cost}, have {points}."
@@ -538,7 +538,7 @@ def personalization():
             cursor.execute("UPDATE avatar SET current_skin=? WHERE user_id=?", (selected_skin, user_id))
             db.commit()
             current_skin = selected_skin
-            message = "Avatar updated! Looking great! ✨"
+            message = "Avatar updated! Looking great!"
             msg_type = "success"
 
     return render_template("personalization.html",

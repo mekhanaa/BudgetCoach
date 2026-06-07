@@ -450,12 +450,20 @@ tbody tr:hover { background: rgba(56,189,248,0.03); }
     padding: 20px 16px;
     text-align: center;
     transition: all 0.22s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .skin-card.owned { border-color: rgba(52,211,153,0.4); }
 .skin-card.active { border-color: var(--accent); box-shadow: var(--glow); }
 
-.skin-card img { width: 120px; height: auto; margin-bottom: 12px; }
+.skin-card img {
+    width: 120px;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 12px;
+}
 
 .skin-name {
     font-family: 'Syne', sans-serif;
