@@ -90,3 +90,11 @@ http://127.0.0.1:5001
 **Mekhana Rajesh**  
 MCA Student, Cochin University of Science and Technology (CUSAT)  
 [GitHub](https://github.com/mekhanaa) · [LinkedIn](https://linkedin.com/in/mekhana-rajesh)
+
+
+## How to Run
+
+1. Clone the repository.
+2. Install the required Python dependencies.
+3. Run the Flask application.
+4. Open the local URL in your browser.
